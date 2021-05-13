@@ -18,10 +18,11 @@ public class WeatherController {
     @Autowired
     private WeatherService weatherService;
 
-    @ApiOperation("Return a JSON object that gives the weather averages.")
+    @ApiOperation("Returns min and max temperature for next 3 days")
     @GetMapping(value = "/forecast", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> weatherForecastAverage(@ApiParam("City name") @RequestParam() String city) {
-        return weatherService.weatherForecastAverage(city);
+    public ResponseEntity<?> weatherForecastAverage(@ApiParam("City name") @RequestParam String city,
+                                                    @ApiParam("Temperature Unit") @RequestParam(required = false) String unit) {
+        return weatherService.weatherForecastAverage(city, unit);
     }
 
 }
