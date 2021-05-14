@@ -11,7 +11,6 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Builder
 public class WeatherTimeDTO {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

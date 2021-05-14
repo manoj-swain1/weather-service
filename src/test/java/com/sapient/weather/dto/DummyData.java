@@ -28,11 +28,10 @@ public class DummyData {
             weatherTempData.setTemp_max(temp.add(new BigDecimal(i)));
             weatherTempData.setTemp_min(temp.subtract(new BigDecimal(i)));
 
-            WeatherTimeDTO dto = new WeatherTimeDTO.WeatherTimeDTOBuilder()
-                    .dt(date)
-                    .main(weatherTempData)
-                    .weather(weatherCondition)
-                    .build();
+            WeatherTimeDTO dto = new WeatherTimeDTO();
+            dto.setDt(date);
+            dto.setMain(weatherTempData);
+            dto.setWeather(weatherCondition);
             data.add(dto);
         });
         return data;
