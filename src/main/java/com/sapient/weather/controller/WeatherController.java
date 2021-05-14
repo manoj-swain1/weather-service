@@ -22,7 +22,7 @@ public class WeatherController {
     @GetMapping(value = "/forecast", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> weatherForecastAverage(@ApiParam("City name") @RequestParam String city,
                                                     @ApiParam("Temperature Unit") @RequestParam(required = false) String unit) {
-        return weatherService.weatherForecastAverage(city, unit);
+        return weatherService.weatherForecast(city, unit);
     }
 
 }

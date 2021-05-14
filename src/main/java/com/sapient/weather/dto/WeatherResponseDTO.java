@@ -49,19 +49,16 @@ public class WeatherResponseDTO implements Serializable {
         this.max_temp = BigDecimal.ZERO;
         this.min_temp = new BigDecimal(Integer.MAX_VALUE);
         this.warning = "";
+        this.weather = "";
         this.weatherConditions = new ArrayList<>();
     }
 
     public void updateWeatherData(WeatherTimeDTO map) {
-        if (this.max_temp.compareTo(map.getMain().getTemp_max()) < 0) {
-            this.max_temp = map.getMain().getTemp_max();
-        }
-        if (this.min_temp.compareTo(map.getMain().getTemp_min()) > 0) {
-            this.min_temp = map.getMain().getTemp_min();
-        }
+        this.max_temp = this.max_temp.max(map.getMain().getTemp_max());
+        this.min_temp = this.min_temp.min(map.getMain().getTemp_min());
         this.weatherConditions.add(map.getWeather().stream()
                 .findFirst().map(WeatherConditionDTO::getMain).orElse(""));
-
+        this.setDate(map.getDt().toLocalDate());
     }
 
     public void setWarning() {

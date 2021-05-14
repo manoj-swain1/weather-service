@@ -4,6 +4,7 @@ import com.sapient.weather.dto.WeatherDTO;
 import com.sapient.weather.dto.WeatherResponseDTO;
 import com.sapient.weather.dto.WeatherTimeDTO;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
@@ -31,12 +32,12 @@ public class WeatherService {
 
     private final RestTemplate restTemplate;
 
+    @Autowired
     public WeatherService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    //    @Cached(expire = 10, timeUnit = TimeUnit.MINUTES)
-    public ResponseEntity<?> weatherForecastAverage(String city, String metric) {
+    public ResponseEntity<?> weatherForecast(String city, String metric) {
         List<WeatherResponseDTO> result = new ArrayList<>();
         try {
             WeatherDTO weatherMap = this.restTemplate.getForObject(this.url(city, metric), WeatherDTO.class);
@@ -63,7 +64,6 @@ public class WeatherService {
         WeatherResponseDTO result = new WeatherResponseDTO();
 
         for (WeatherTimeDTO item : list) {
-            result.setDate(item.getDt().toLocalDate());
             result.updateWeatherData(item);
         }
 
