@@ -1,78 +1,34 @@
 package com.sapient.weather.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sapient.weather.enums.WeatherCondition;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.function.BinaryOperator;
 
 public class WeatherDTO implements Serializable {
 
-    private static final long serialVersionUID = 5763148931413501367L;
-    private static final BigDecimal HOT_TEMP_LIMIT = new BigDecimal(40.0);
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @Getter
-    @Setter
-    private LocalDate date;
+    private static final long serialVersionUID = 1253320017739887653L;
 
     @Getter
     @Setter
-    private BigDecimal max_temp;
+    private String cod;
 
     @Getter
     @Setter
-    private BigDecimal min_temp;
+    private BigDecimal message;
 
     @Getter
     @Setter
-    private String weather;
+    private Integer cnt;
 
+    @JacksonXmlProperty(localName = "list")
+    @JacksonXmlElementWrapper(localName = "list", useWrapping = true)
     @Getter
     @Setter
-    private String warning;
-
-    @JsonIgnore
-    private List<String> weatherConditions;
-
-
-    public WeatherDTO() {
-        this.max_temp = BigDecimal.ZERO;
-        this.min_temp = new BigDecimal(Integer.MAX_VALUE);
-        this.warning = "";
-        this.weatherConditions = new ArrayList<>();
-    }
-
-    public void updateWeatherData(WeatherMapTimeDTO map) {
-        if (this.max_temp.compareTo(map.getMain().getTemp_max()) < 0) {
-            this.max_temp = map.getMain().getTemp_max();
-        }
-        if (this.min_temp.compareTo(map.getMain().getTemp_min()) > 0) {
-            this.min_temp = map.getMain().getTemp_min();
-        }
-        this.weatherConditions.add(map.getWeather().stream()
-                .findFirst().map(WeatherConditionDTO::getMain).orElse(""));
-
-    }
-
-    public void setWarning() {
-        if (this.max_temp.compareTo(HOT_TEMP_LIMIT) > 0) {
-            this.warning = "Use sunscreen lotion";
-        }
-        this.weather = this.weatherConditions.stream()
-                .reduce(BinaryOperator.maxBy(Comparator.comparingInt(o -> Collections.frequency(weatherConditions, o)))).orElse("");
-        if (WeatherCondition.RAIN.toString().equalsIgnoreCase(this.weather)) {
-            this.warning = "Carry Umbrella";
-        }
-    }
+    private List<WeatherTimeDTO> list;
 
 }

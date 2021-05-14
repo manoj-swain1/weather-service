@@ -10,7 +10,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class WeatherMapTimeDTO {
+public class WeatherTimeDTO {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("dt_txt")
@@ -20,7 +20,7 @@ public class WeatherMapTimeDTO {
 
     @Getter
     @Setter
-    private WeatherMapTimeMainDTO main;
+    private WeatherTimeMainDTO main;
 
     @JacksonXmlProperty(localName = "weather")
     @JacksonXmlElementWrapper(localName = "weather", useWrapping = true)

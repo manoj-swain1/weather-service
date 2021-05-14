@@ -5,7 +5,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
-public class WeatherMapTimeMainDTO {
+public class WeatherTimeMainDTO {
 
     @Getter
     @Setter

@@ -1,8 +1,8 @@
 package com.sapient.weather.service;
 
 import com.sapient.weather.dto.WeatherDTO;
-import com.sapient.weather.dto.WeatherMapDTO;
-import com.sapient.weather.dto.WeatherMapTimeDTO;
+import com.sapient.weather.dto.WeatherResponseDTO;
+import com.sapient.weather.dto.WeatherTimeDTO;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -37,18 +37,18 @@ public class WeatherService {
 
     //    @Cached(expire = 10, timeUnit = TimeUnit.MINUTES)
     public ResponseEntity<?> weatherForecastAverage(String city, String metric) {
-        List<WeatherDTO> result = new ArrayList<>();
+        List<WeatherResponseDTO> result = new ArrayList<>();
         try {
-            WeatherMapDTO weatherMap = this.restTemplate.getForObject(this.url(city, metric), WeatherMapDTO.class);
+            WeatherDTO weatherMap = this.restTemplate.getForObject(this.url(city, metric), WeatherDTO.class);
 
             for (LocalDate reference = LocalDate.now();
                  reference.isBefore(LocalDate.now().plusDays(3));
                  reference = reference.plusDays(1)) {
                 final LocalDate ref = reference;
-                List<WeatherMapTimeDTO> collect = weatherMap.getList().stream()
+                List<WeatherTimeDTO> collect = weatherMap.getList().stream()
                         .filter(x -> x.getDt().toLocalDate().equals(ref)).collect(Collectors.toList());
                 if (!CollectionUtils.isEmpty(collect)) {
-                    result.add(this.average(collect));
+                    result.add(this.createResponse(collect));
                 }
 
             }
@@ -59,10 +59,10 @@ public class WeatherService {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    private WeatherDTO average(List<WeatherMapTimeDTO> list) {
-        WeatherDTO result = new WeatherDTO();
+    private WeatherResponseDTO createResponse(List<WeatherTimeDTO> list) {
+        WeatherResponseDTO result = new WeatherResponseDTO();
 
-        for (WeatherMapTimeDTO item : list) {
+        for (WeatherTimeDTO item : list) {
             result.setDate(item.getDt().toLocalDate());
             result.updateWeatherData(item);
         }
