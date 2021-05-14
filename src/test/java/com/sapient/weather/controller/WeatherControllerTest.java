@@ -12,13 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import springfox.documentation.spring.web.json.Json;
 
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -36,22 +36,25 @@ public class WeatherControllerTest {
 
     @Test
     void whenValidInput_thenReturns200() throws Exception {
-
+        String data = objectMapper.writeValueAsString(DummyData.dummyWeather(LocalDateTime.now()));
+        when(weatherService.weatherForecast(any(), any()))
+                .thenReturn(new ResponseEntity(data, HttpStatus.OK));
         mockMvc.perform(get("/weather/forecast")
                 .contentType("application/json")
-                .param("city", "Pune")
-                .content(objectMapper.writeValueAsString(DummyData.dummyWeather(LocalDateTime.now()))))
-                .andExpect(status().isOk());
+                .param("city", "Pune"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(data));
     }
 
     @Test
     public void whenInValidInput_thenReturns400() throws Exception {
+        String response = "invalid input";
         when(weatherService.weatherForecast(any(), any()))
-                .thenReturn(new ResponseEntity(new Json("invalid input"), HttpStatus.BAD_REQUEST));
+                .thenReturn(new ResponseEntity(response, HttpStatus.BAD_REQUEST));
         mockMvc.perform(get("/weather/forecast")
                 .contentType("application/json")
-                .param("city", "Pune")
-                .content(objectMapper.writeValueAsString(DummyData.dummyWeather(LocalDateTime.now()))))
-                .andExpect(status().is4xxClientError());
+                .param("city", "Pune"))
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().string("invalid input"));
     }
 }

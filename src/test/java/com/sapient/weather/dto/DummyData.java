@@ -40,13 +40,11 @@ public class DummyData {
 
     public static WeatherDTO dummyWeather(LocalDateTime date) {
         WeatherDTO result = new WeatherDTO();
+
         result.setList(new ArrayList<>());
         IntStream.rangeClosed(0, 6).forEach(i -> {
-            if (i > 0) {
-                date.plusDays(i);
-            }
-
-            result.getList().addAll(dummyWeatherTimeDTOList(date));
+            List<WeatherTimeDTO> weatherDaysData = dummyWeatherTimeDTOList(i > 0 ? date.plusDays(i) : date);
+            result.getList().addAll(weatherDaysData);
         });
         return result;
     }

@@ -40,7 +40,7 @@ public class WeatherService {
     public ResponseEntity<?> weatherForecast(String city, String metric) {
         List<WeatherResponseDTO> result = new ArrayList<>();
         try {
-            WeatherDTO weatherMap = this.restTemplate.getForObject(this.url(city, metric), WeatherDTO.class);
+            WeatherDTO weatherMap = this.restTemplate.getForObject(this.prepareUrl(city, metric), WeatherDTO.class);
 
             for (LocalDate reference = LocalDate.now();
                  reference.isBefore(LocalDate.now().plusDays(3));
@@ -72,7 +72,7 @@ public class WeatherService {
         return result;
     }
 
-    private String url(String city, String unit) {
+    private String prepareUrl(String city, String unit) {
         String tempUnit = Optional.ofNullable(unit).filter(Strings::isNotEmpty).orElse(defaultUnit);
         return String.format(URI.concat("?q=%s").concat("&appid=%s").concat("&units=%s"), city, API_ID, tempUnit);
     }
