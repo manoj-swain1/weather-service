@@ -37,7 +37,7 @@ public class WeatherControllerTest {
     @Test
     void whenValidInput_thenReturns200() throws Exception {
         String data = objectMapper.writeValueAsString(DummyData.dummyWeather(LocalDateTime.now()));
-        when(weatherService.weatherForecast(any(), any()))
+        when(weatherService.weatherForecast(any()))
                 .thenReturn(new ResponseEntity(data, HttpStatus.OK));
         mockMvc.perform(get("/weather/forecast")
                 .contentType("application/json")
@@ -49,7 +49,7 @@ public class WeatherControllerTest {
     @Test
     public void whenInValidInput_thenReturns400() throws Exception {
         String response = "invalid input";
-        when(weatherService.weatherForecast(any(), any()))
+        when(weatherService.weatherForecast(any()))
                 .thenReturn(new ResponseEntity(response, HttpStatus.BAD_REQUEST));
         mockMvc.perform(get("/weather/forecast")
                 .contentType("application/json")

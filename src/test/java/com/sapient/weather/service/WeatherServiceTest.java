@@ -38,7 +38,7 @@ public class WeatherServiceTest {
         this.server.expect(requestTo("https://api.openweathermap.org/data/2.5/forecast?q=Pune&appid=59c6dd543e5f429f56395a0ca3e8b79e&units=metric"))
                 .andRespond(withSuccess(responseString, MediaType.APPLICATION_JSON));
 
-        ResponseEntity<?> response = weatherService.weatherForecast("Pune", "");
+        ResponseEntity<?> response = weatherService.weatherForecast("Pune");
 
         Assertions.assertNotNull(response);
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -52,7 +52,7 @@ public class WeatherServiceTest {
         this.server.expect(requestTo("https://api.openweathermap.org/data/2.5/forecast?q=Pune&appid=59c6dd543e5f429f56395a0ca3e8b79e&units=metric"))
                 .andRespond(withBadRequest());
 
-        ResponseEntity<?> response = weatherService.weatherForecast("Pune", "");
+        ResponseEntity<?> response = weatherService.weatherForecast("Pune");
 
         Assertions.assertNotNull(response);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());

@@ -3,7 +3,6 @@ package com.sapient.weather.service;
 import com.sapient.weather.dto.WeatherDTO;
 import com.sapient.weather.dto.WeatherResponseDTO;
 import com.sapient.weather.dto.WeatherTimeDTO;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -18,7 +17,6 @@ import springfox.documentation.spring.web.json.Json;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,10 +35,10 @@ public class WeatherService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public ResponseEntity<?> weatherForecast(String city, String metric) {
+    public ResponseEntity<?> weatherForecast(String city) {
         List<WeatherResponseDTO> result = new ArrayList<>();
         try {
-            WeatherDTO weatherMap = this.restTemplate.getForObject(this.prepareUrl(city, metric), WeatherDTO.class);
+            WeatherDTO weatherMap = this.restTemplate.getForObject(this.prepareUrl(city), WeatherDTO.class);
 
             for (LocalDate reference = LocalDate.now();
                  reference.isBefore(LocalDate.now().plusDays(3));
@@ -72,8 +70,7 @@ public class WeatherService {
         return result;
     }
 
-    private String prepareUrl(String city, String unit) {
-        String tempUnit = Optional.ofNullable(unit).filter(Strings::isNotEmpty).orElse(defaultUnit);
-        return String.format(URI.concat("?q=%s").concat("&appid=%s").concat("&units=%s"), city, API_ID, tempUnit);
+    private String prepareUrl(String city) {
+        return String.format(URI.concat("?q=%s").concat("&appid=%s").concat("&units=%s"), city, API_ID, defaultUnit);
     }
 }
